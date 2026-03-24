@@ -989,9 +989,9 @@ function CutFrame({
 
 function StatusChip({ label, pulse = false, tone }) {
   return (
-    <CutFrame className="w-auto" cutClass="clip-chip" innerClassName="chip-fill px-3 py-2">
-      <div className="flex items-center gap-2 text-[11px] text-[var(--text)]">
-        <span className={`status-dot ${tone} ${pulse ? "status-pulse" : ""}`} />
+    <CutFrame className="w-auto" cutClass="clip-chip" innerClassName="chip-fill px-2.5 py-1.5">
+      <div className="flex items-center gap-1.5 text-[10px] text-[var(--muted)]">
+        <span className={`status-dot ${tone} ${pulse ? "status-pulse" : ""}`} style={{ width: 6, height: 6 }} />
         <span className="label-track">{label}</span>
       </div>
     </CutFrame>
@@ -1022,7 +1022,7 @@ function SessionCard({
 
   return (
     <div
-      className={`session-card group w-full rounded-[2px] border px-3 py-3 text-left transition-colors ${isActive ? "session-card-active border-[var(--border)] bg-[var(--surface-2)]" : "border-[var(--border)] hover:bg-[var(--surface-2)]"}`}
+      className={`session-card group w-full rounded-[3px] border px-3.5 py-3 text-left ${isActive ? "session-card-active border-[var(--border)] bg-[var(--surface-2)]" : "border-[var(--border)]"}`}
       onClick={onSelect}
       onKeyDown={(event) => {
         if (event.key === "Enter" || event.key === " ") {
@@ -1036,14 +1036,14 @@ function SessionCard({
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
-            <p className={`truncate text-[13px] ${isActive ? "text-[var(--primary)]" : "text-[var(--text)]"}`}>
+            <p className={`truncate text-[13px] font-medium ${isActive ? "text-[var(--primary)]" : "text-[var(--text)]"}`}>
               {highlightText(session.title, query)}
             </p>
             {isActive ? (
               <span className="session-live-badge">LIVE</span>
             ) : null}
           </div>
-          <p className="mt-2 line-clamp-2 text-[12px] leading-5 text-[var(--text)]/85">
+          <p className="mt-1.5 line-clamp-2 text-[12px] leading-5 text-[var(--muted)]">
             {highlightText(preview, query)}
           </p>
         </div>
@@ -1051,14 +1051,15 @@ function SessionCard({
           <span className="text-[11px] text-[var(--muted)]">
             {formatRelativeTime(session.updatedAt)}
           </span>
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1.5">
             <span className="session-count">{messageCount}</span>
             <button
-              className="session-action text-[12px] text-[var(--error)]"
+              className="session-action text-[14px] text-[var(--muted)]"
               onClick={(event) => {
                 event.stopPropagation();
                 onDelete();
               }}
+              title="Delete session"
               type="button"
             >
               ×
@@ -1086,61 +1087,44 @@ function SessionsPanelBody({
 }) {
   return (
     <div className="flex h-full min-h-0 flex-col gap-4">
-      <div className="sessions-toolbar space-y-4">
-        <div className="flex items-start justify-between gap-3">
-          <div>
-            <p className="label-track text-[12px] text-[var(--primary)]">
-              SESSION_GRID
-            </p>
-            <p className="mt-1 text-[12px] text-[var(--muted)]">
-              multiplexed memory shards
-            </p>
-          </div>
-          <span className="sessions-meta text-[11px] text-[var(--text)]/80">{resultLabel}</span>
+      <div className="sessions-toolbar space-y-3">
+        <div className="flex items-center justify-between gap-3">
+          <p className="label-track text-[12px] font-bold text-[var(--primary)]">
+            SESSIONS
+          </p>
+          <span className="sessions-meta text-[11px] text-[var(--muted)]">{resultLabel}</span>
         </div>
 
         <button
-          className="cyber-button clip-button w-full px-4 py-3 text-[13px] text-[var(--primary)] transition-all duration-150"
+          className="cyber-button clip-button w-full px-4 py-2.5 transition-all duration-150"
           onClick={onCreateSession}
           type="button"
         >
-          <span className="button-fill button-ghost">[ + NEW SESSION ]</span>
+          <span className="button-fill button-ghost">+ NEW SESSION</span>
         </button>
 
-        <div>
-          <div className="mb-2 flex items-center justify-between gap-2">
-            <p className="label-track text-[11px] text-[var(--muted)]">
-              SEARCH
-            </p>
-            <span className="text-[11px] text-[var(--text)]/75">{resultLabel}</span>
+        <FieldShell>
+          <div className="relative">
+            {!query ? (
+              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center text-[12px] text-[var(--muted)]">
+                <span>Search sessions...</span>
+              </div>
+            ) : null}
+            <input
+              className="w-full bg-transparent text-[12px] text-[var(--text)] outline-none placeholder-transparent"
+              onChange={onSearchChange}
+              onFocus={onSearchFocus}
+              onKeyDown={onSearchKeyDown}
+              placeholder="Search sessions..."
+              value={query}
+            />
           </div>
-          <FieldShell>
-            <div className="relative">
-              {!query ? (
-                <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center text-[13px] text-[var(--muted)]">
-                  <span>search_transmissions &gt; </span>
-                  <span className="blinking-underscore">_</span>
-                </div>
-              ) : null}
-              <input
-                className="w-full bg-transparent text-[13px] text-[var(--text)] outline-none placeholder-transparent"
-                onChange={onSearchChange}
-                onFocus={onSearchFocus}
-                onKeyDown={onSearchKeyDown}
-                placeholder="search_transmissions > _"
-                value={query}
-              />
-            </div>
-          </FieldShell>
-        </div>
+        </FieldShell>
       </div>
 
       <div className="min-h-0 flex-1 overflow-y-auto pr-1">
         {filteredSessions.length ? (
           <div className="space-y-2">
-            <p className="label-track px-1 text-[11px] text-[var(--muted)]">
-              RECENT TRANSMISSIONS
-            </p>
             {filteredSessions.map(({ preview, session }) => (
               <SessionCard
                 isActive={session.id === activeSessionId}
@@ -1155,8 +1139,8 @@ function SessionsPanelBody({
           </div>
         ) : (
           <div className="flex h-full items-center justify-center">
-            <p className="label-track text-[11px] text-[var(--muted)]">
-              [ NO TRANSMISSIONS FOUND ]
+            <p className="text-[12px] text-[var(--muted)]">
+              No sessions found
             </p>
           </div>
         )}
@@ -1168,22 +1152,19 @@ function SessionsPanelBody({
         innerClassName="chip-fill px-3 py-3"
       >
         <button
-          className="cyber-button clip-button mb-3 w-full px-3 py-2 text-[12px] text-[var(--ai)] transition-all duration-150"
+          className="cyber-button clip-button mb-3 w-full px-3 py-2 transition-all duration-150"
           onClick={() => onExportSession(activeSessionId)}
           type="button"
         >
           <span className="button-fill button-export">
-            [ EXPORT ACTIVE SESSION ]
+            EXPORT SESSION
           </span>
         </button>
         <p className="truncate text-[12px] text-[var(--text)]">
           {activeSessionTitle}
         </p>
-        <p className="label-track text-[11px] text-[var(--muted)]">
-          LOCAL MEMORY CACHE
-        </p>
-        <p className="mt-2 text-[12px] leading-5 text-[var(--text)]/75">
-          Sessions auto-save locally. Use search to jump shards fast.
+        <p className="mt-1 text-[11px] leading-5 text-[var(--muted)]">
+          Sessions auto-save to local storage.
         </p>
       </CutFrame>
     </div>
@@ -1196,10 +1177,10 @@ function AttachmentPreviewList({ attachments, onRemove }) {
   }
 
   return (
-    <div className="attachment-preview-row mb-3 flex gap-3 overflow-x-auto pb-1">
+    <div className="attachment-preview-row mb-3 flex gap-2.5 overflow-x-auto pb-1">
       {attachments.map((attachment) => (
         <CutFrame
-          className="attachment-preview-frame min-w-[220px] flex-shrink-0"
+          className="attachment-preview-frame min-w-[200px] flex-shrink-0"
           cutClass="clip-input"
           innerClassName="attachment-preview-shell p-3"
           key={attachment.id}
@@ -1208,25 +1189,26 @@ function AttachmentPreviewList({ attachments, onRemove }) {
             {attachment.kind === "image" && attachment.previewUrl ? (
               <img
                 alt={attachment.name}
-                className="h-12 w-12 rounded-[2px] object-cover"
+                className="h-11 w-11 rounded-[3px] object-cover"
                 src={attachment.previewUrl}
               />
             ) : (
-              <div className="flex h-12 w-12 items-center justify-center rounded-[2px] border border-[var(--border)] bg-[rgba(255,255,255,0.04)] text-[18px] text-[var(--muted)]">
+              <div className="flex h-11 w-11 items-center justify-center rounded-[3px] border border-[var(--border)] bg-[rgba(255,255,255,0.03)] text-[16px] text-[var(--muted)]">
                 📄
               </div>
             )}
             <div className="min-w-0 flex-1">
               <p className="truncate text-[12px] text-[var(--text)]">{attachment.name}</p>
-              <p className="mt-1 text-[10px] text-[var(--muted)]">
+              <p className="mt-1 text-[11px] text-[var(--muted)]">
                 {attachment.kind === "image"
                   ? "IMAGE"
-                  : `${formatFileSize(attachment.size)} // ${getAttachmentTypeTag(attachment)}`}
+                  : `${formatFileSize(attachment.size)} / ${getAttachmentTypeTag(attachment)}`}
               </p>
             </div>
             <button
-              className="text-[12px] text-[var(--error)]"
+              className="flex h-6 w-6 items-center justify-center rounded-full text-[14px] text-[var(--muted)] transition-colors hover:bg-[rgba(255,0,60,0.1)] hover:text-[var(--error)]"
               onClick={() => onRemove(attachment.id)}
+              title="Remove attachment"
               type="button"
             >
               ×
@@ -1256,10 +1238,10 @@ function AttachmentDisplayList({ attachments, onImageOpen }) {
             >
               <img
                 alt={attachment.name}
-                className="max-h-[360px] w-full rounded-[2px] object-cover"
+                className="max-h-[360px] w-full rounded-[3px] object-cover"
                 src={attachment.previewUrl}
               />
-              <span className="mt-2 block text-[10px] text-[var(--muted)]">
+              <span className="mt-2 block text-[11px] text-[var(--muted)]">
                 {attachment.name}
               </span>
             </button>
@@ -1270,7 +1252,7 @@ function AttachmentDisplayList({ attachments, onImageOpen }) {
           <CutFrame
             className="attachment-card-frame"
             cutClass="clip-input"
-            innerClassName="attachment-card-shell px-3 py-3"
+            innerClassName="attachment-card-shell px-4 py-3"
             key={attachment.id}
           >
             <div className="flex items-center justify-between gap-3">
@@ -1278,7 +1260,7 @@ function AttachmentDisplayList({ attachments, onImageOpen }) {
                 <p className="truncate text-[12px] text-[var(--text)]">
                   {attachment.name}
                 </p>
-                <p className="mt-1 text-[10px] text-[var(--muted)]">
+                <p className="mt-1 text-[11px] text-[var(--muted)]">
                   {formatFileSize(attachment.size)}
                 </p>
               </div>
@@ -1304,11 +1286,11 @@ function MessageBubble({
     return (
       <div className="message-enter flex justify-center">
         <CutFrame
-          className="w-auto max-w-full"
+          className="w-auto max-w-[90%]"
           cutClass="clip-chip"
-          innerClassName={`px-4 py-3 ${message.errorType === "warning" ? "warning-shell" : "warning-shell"}`}
+          innerClassName={`px-5 py-3 ${message.errorType === "warning" ? "warning-shell" : "warning-shell"}`}
         >
-          <p className="text-center text-[12px] text-[var(--error)]">
+          <p className="text-center text-[12px] leading-5 text-[var(--error)]">
             {message.content}
           </p>
         </CutFrame>
@@ -1317,37 +1299,37 @@ function MessageBubble({
   }
 
   const isUser = message.role === "user";
-  const label = isUser ? "> [YOU]" : "< [GHOST]";
+  const label = isUser ? "YOU" : "GHOST";
   const toneClass = isUser ? "text-[var(--primary)]" : "text-[var(--ai)]";
   const isTtsLoading =
     ttsButtonState.messageId === message.id && ttsButtonState.status === "loading";
   const isSpeaking =
     ttsButtonState.messageId === message.id && ttsButtonState.status === "playing";
   const speakLabel = isTtsLoading
-    ? "[ TRANSMITTING... ]"
+    ? "LOADING..."
     : isSpeaking
-      ? "[ STOP ]"
-      : "[ SPEAK ]";
+      ? "STOP"
+      : "SPEAK";
 
   return (
     <div className={`message-enter group flex ${isUser ? "justify-end" : "justify-start"}`}>
-      <article className="w-full max-w-[88%] md:max-w-[82%]">
-        <div className="mb-2 flex items-center justify-between gap-4 px-1">
+      <article className="w-full max-w-[90%] md:max-w-[80%]">
+        <div className="mb-1.5 flex items-center justify-between gap-4 px-1">
           <div className="flex items-center gap-3">
-            <span className={`label-track text-[10px] ${toneClass}`}>
-              {`${label} // LIVE`}
+            <span className={`label-track text-[11px] font-bold ${toneClass}`}>
+              {label}
             </span>
             {!isUser && ttsAvailable ? (
               <button
-                className={`message-speak text-[11px] transition-opacity ${isSpeaking ? "message-speak-stop opacity-100" : isTtsLoading ? "message-speak-loading opacity-100" : "text-[var(--ai)] opacity-100 md:opacity-0 md:group-hover:opacity-100"}`}
+                className={`message-speak text-[11px] transition-all duration-150 ${isSpeaking ? "message-speak-stop opacity-100" : isTtsLoading ? "message-speak-loading opacity-100" : "text-[var(--ai)]/70 opacity-100 hover:text-[var(--ai)] md:opacity-0 md:group-hover:opacity-100"}`}
                 onClick={() => onSpeakToggle(message)}
                 type="button"
               >
-                {speakLabel}
+                [ {speakLabel} ]
               </button>
             ) : null}
           </div>
-          <span className="text-[10px] text-[var(--muted)]">
+          <span className="text-[11px] text-[var(--muted)]">
             {message.timestamp}
           </span>
         </div>
@@ -1355,13 +1337,13 @@ function MessageBubble({
         <CutFrame
           className={isUser ? "bubble-user-frame" : "bubble-ai-frame"}
           cutClass={isUser ? "clip-bubble-user" : "clip-bubble-ai"}
-          innerClassName={`px-4 py-4 md:px-5 md:py-4 ${isUser ? "bubble-user-fill" : "bubble-ai-fill"}`}
+          innerClassName={`px-5 py-4 md:px-6 md:py-5 ${isUser ? "bubble-user-fill" : "bubble-ai-fill"}`}
         >
           {message.content ? (
             <div
-              className={`border-l-2 pl-4 ${isUser ? "border-[var(--primary)]" : "border-[var(--ai)]"}`}
+              className={`border-l-2 pl-4 ${isUser ? "border-[var(--primary)]/60" : "border-[var(--ai)]/60"}`}
             >
-              <p className="whitespace-pre-wrap break-words text-[14px] leading-6 text-[var(--text)]">
+              <p className="whitespace-pre-wrap break-words text-[14px] leading-7 text-[var(--text)]">
                 {message.content}
               </p>
             </div>
@@ -1379,20 +1361,20 @@ function MessageBubble({
 function ThinkingBubble({ text, timestamp }) {
   return (
     <div className="message-enter flex justify-start">
-      <article className="w-full max-w-[88%] md:max-w-[82%]">
-        <div className="mb-2 flex items-center justify-between gap-4 px-1">
-          <span className="label-track text-[10px] text-[var(--ai)]">
-            {"< [GHOST] // LIVE"}
+      <article className="w-full max-w-[90%] md:max-w-[80%]">
+        <div className="mb-1.5 flex items-center justify-between gap-4 px-1">
+          <span className="label-track text-[11px] font-bold text-[var(--ai)]">
+            GHOST
           </span>
-          <span className="text-[10px] text-[var(--muted)]">{timestamp}</span>
+          <span className="text-[11px] text-[var(--muted)]">{timestamp}</span>
         </div>
         <CutFrame
           className="bubble-ai-frame"
           cutClass="clip-bubble-ai"
-          innerClassName="bubble-ai-fill px-4 py-4 md:px-5 md:py-4"
+          innerClassName="bubble-ai-fill px-5 py-4 md:px-6 md:py-5"
         >
-          <div className="border-l-2 border-[var(--ai)] pl-4">
-            <p className="text-[14px] leading-6 text-[var(--ai)]">{text}</p>
+          <div className="border-l-2 border-[var(--ai)]/60 pl-4">
+            <p className="text-[14px] leading-7 text-[var(--ai)]">{text}</p>
           </div>
         </CutFrame>
       </article>
@@ -1403,22 +1385,22 @@ function ThinkingBubble({ text, timestamp }) {
 function BootOverlay({ bootFading, bootLineCount }) {
   return (
     <div
-      className={`absolute inset-4 z-20 transition-opacity duration-300 ${bootFading ? "opacity-0" : "opacity-100"}`}
+      className={`absolute inset-4 z-20 transition-opacity duration-500 ${bootFading ? "opacity-0" : "opacity-100"}`}
     >
       <CutFrame
         className="h-full"
         cutClass="clip-terminal"
-        innerClassName="terminal-shell flex h-full flex-col justify-end gap-4 p-5 md:p-6"
+        innerClassName="terminal-shell flex h-full flex-col justify-end gap-5 p-5 md:p-8"
       >
         <div className="flex items-center justify-between gap-3">
-          <p className="label-track text-[10px] text-[var(--primary)]">
-            BOOT_SEQUENCE
+          <p className="label-track text-[11px] font-bold text-[var(--primary)]">
+            BOOT SEQUENCE
           </p>
-          <p className="text-[10px] text-[var(--muted)]">
-            secure terminal relay
+          <p className="text-[11px] text-[var(--muted)]">
+            initializing...
           </p>
         </div>
-        <div className="space-y-2 text-[14px] leading-6 text-[var(--primary)]">
+        <div className="space-y-2.5 text-[14px] leading-7 text-[var(--primary)]">
           {BOOT_LINES.slice(0, bootLineCount).map((line) => (
             <p key={line} className="message-enter whitespace-pre-wrap">
               {line}
@@ -1447,48 +1429,52 @@ function AuthModal({
         innerClassName="auth-shell p-5 md:p-6"
       >
         <div className="space-y-2">
-          <p className="label-track text-[12px] text-[var(--primary)]">
-            [ CONNECTOR AUTH REQUIRED ]
+          <p className="label-track text-[13px] font-bold text-[var(--primary)]">
+            CONNECT TO PROVIDER
           </p>
-          <p className="text-[11px] text-[var(--muted)]">
-            configure your upstream relay before jacking in
+          <p className="text-[12px] leading-5 text-[var(--muted)]">
+            Enter your API key to start chatting
           </p>
         </div>
 
-        <div className="mt-5">
-          <p className="label-track mb-2 text-[10px] text-[var(--muted)]">
-            CONNECTOR:
-          </p>
-          <FieldShell className="mb-4">
-            <select
-              className="w-full bg-transparent text-[13px] text-[var(--text)] outline-none"
-              onChange={(event) => onProviderChange(event.target.value)}
-              value={provider}
-            >
-              {PROVIDER_OPTIONS.map((option) => (
-                <option key={option} value={option}>
-                  {getConnectorSpec(option).label}
-                </option>
-              ))}
-            </select>
-          </FieldShell>
+        <div className="mt-5 space-y-4">
+          <div>
+            <p className="label-track mb-1.5 text-[11px] text-[var(--muted)]">
+              Provider
+            </p>
+            <FieldShell>
+              <select
+                className="w-full bg-transparent text-[13px] text-[var(--text)] outline-none"
+                onChange={(event) => onProviderChange(event.target.value)}
+                value={provider}
+              >
+                {PROVIDER_OPTIONS.map((option) => (
+                  <option key={option} value={option}>
+                    {getConnectorSpec(option).label}
+                  </option>
+                ))}
+              </select>
+            </FieldShell>
+          </div>
 
-          <p className="label-track mb-2 text-[10px] text-[var(--muted)]">
-            {providerSpec.baseUrlLabel}
-          </p>
-          <FieldShell>
-            <input
-              className="w-full bg-transparent text-[13px] text-[var(--text)] outline-none"
-              readOnly
-              value={currentBaseUrl}
-            />
-          </FieldShell>
+          <div>
+            <p className="label-track mb-1.5 text-[11px] text-[var(--muted)]">
+              Endpoint
+            </p>
+            <FieldShell>
+              <input
+                className="w-full bg-transparent text-[12px] text-[var(--muted)] outline-none"
+                readOnly
+                value={currentBaseUrl}
+              />
+            </FieldShell>
+          </div>
         </div>
 
         {providerSpec.requiresKey ? (
           <div className="mt-4">
-            <p className="label-track mb-2 text-[10px] text-[var(--muted)]">
-              {providerSpec.keyLabel}
+            <p className="label-track mb-1.5 text-[11px] text-[var(--muted)]">
+              API Key
             </p>
             <FieldShell>
               <input
@@ -1506,18 +1492,18 @@ function AuthModal({
             </FieldShell>
           </div>
         ) : (
-          <p className="mt-4 text-[11px] leading-5 text-[var(--muted)]">
-            local relay detected. no API key required for Ollama.
+          <p className="mt-4 text-[12px] leading-6 text-[var(--muted)]">
+            Ollama detected locally -- no API key required.
           </p>
         )}
 
         <button
-          className="cyber-button clip-button mt-4 w-full px-4 py-3 text-[12px] text-black transition-all duration-150"
+          className="cyber-button clip-button mt-5 w-full px-4 py-3 transition-all duration-150"
           onClick={onAuthenticate}
           type="button"
         >
           <span className="button-fill button-primary">
-            {providerSpec.requiresKey ? "AUTHENTICATE" : "ENTER RELAY"}
+            {providerSpec.requiresKey ? "CONNECT" : "START"}
           </span>
         </button>
       </CutFrame>
@@ -1539,15 +1525,15 @@ function Lightbox({ attachment, onClose }) {
         innerClassName="auth-shell p-4"
       >
         <div className="mb-3 flex items-center justify-between gap-3">
-          <p className="truncate text-[12px] text-[var(--primary)]">
+          <p className="truncate text-[13px] text-[var(--primary)]">
             {attachment.name}
           </p>
           <button
-            className="text-[12px] text-[var(--muted)] transition-colors hover:text-[var(--primary)]"
+            className="cyber-button clip-button px-3 py-1.5 transition-all duration-150"
             onClick={onClose}
             type="button"
           >
-            [ CLOSE ]
+            <span className="button-fill button-toggle">CLOSE</span>
           </button>
         </div>
         <img
@@ -1582,8 +1568,8 @@ function ConfigFields({
   return (
     <div className="space-y-4 text-[13px] text-[var(--text)]">
       <div>
-        <p className="label-track mb-2 text-[10px] text-[var(--muted)]">
-          CONNECTOR:
+        <p className="label-track mb-1.5 text-[11px] text-[var(--muted)]">
+          Provider
         </p>
         <FieldShell>
           <select
@@ -1602,8 +1588,8 @@ function ConfigFields({
 
       {authRequired ? (
         <div>
-          <p className="label-track mb-2 text-[10px] text-[var(--muted)]">
-            {connectorSpec.keyLabel}
+          <p className="label-track mb-1.5 text-[11px] text-[var(--muted)]">
+            API Key
           </p>
           <FieldShell>
             <input
@@ -1618,12 +1604,12 @@ function ConfigFields({
       ) : null}
 
       <div>
-        <p className="label-track mb-2 text-[10px] text-[var(--muted)]">
-          {connectorSpec.baseUrlLabel}
+        <p className="label-track mb-1.5 text-[11px] text-[var(--muted)]">
+          Base URL
         </p>
         <FieldShell>
           <input
-            className="w-full bg-transparent text-[13px] text-[var(--text)] outline-none"
+            className="w-full bg-transparent text-[12px] text-[var(--text)] outline-none"
             onChange={(event) => onUpdateConnectorBaseUrl(event.target.value)}
             placeholder={connectorSpec.defaultBaseUrl}
             value={connectorBaseUrl}
@@ -1632,8 +1618,8 @@ function ConfigFields({
       </div>
 
       <div>
-        <p className="label-track mb-2 text-[10px] text-[var(--muted)]">
-          MODEL:
+        <p className="label-track mb-1.5 text-[11px] text-[var(--muted)]">
+          Model
         </p>
         <FieldShell>
           <input
@@ -1656,110 +1642,122 @@ function ConfigFields({
         </FieldShell>
       </div>
 
-      <div>
-        <p className="label-track mb-2 text-[10px] text-[var(--muted)]">
-          ELEVENLABS KEY:
+      <div className="border-t border-[rgba(255,255,255,0.05)] pt-4">
+        <p className="label-track mb-3 text-[11px] text-[var(--ai)]">
+          Text-to-Speech
         </p>
-        <FieldShell>
-          <input
-            className="w-full bg-transparent text-[13px] text-[var(--text)] outline-none"
-            onChange={(event) => onUpdateElevenLabsKey(event.target.value)}
-            placeholder="your-elevenlabs-api-key"
-            type="password"
-            value={elevenLabsKey}
-          />
-        </FieldShell>
-      </div>
+        <div className="space-y-3">
+          <div>
+            <p className="label-track mb-1.5 text-[11px] text-[var(--muted)]">
+              ElevenLabs Key
+            </p>
+            <FieldShell>
+              <input
+                className="w-full bg-transparent text-[13px] text-[var(--text)] outline-none"
+                onChange={(event) => onUpdateElevenLabsKey(event.target.value)}
+                placeholder="your-elevenlabs-api-key"
+                type="password"
+                value={elevenLabsKey}
+              />
+            </FieldShell>
+          </div>
 
-      <div>
-        <p className="label-track mb-2 text-[10px] text-[var(--muted)]">
-          VOICE ID:
-        </p>
-        <FieldShell>
-          <input
-            className="w-full bg-transparent text-[13px] text-[var(--text)] outline-none"
-            onChange={(event) => onUpdateVoiceId(event.target.value)}
-            placeholder="voice-id-from-elevenlabs"
-            value={voiceId}
-          />
-        </FieldShell>
-      </div>
+          <div>
+            <p className="label-track mb-1.5 text-[11px] text-[var(--muted)]">
+              Voice ID
+            </p>
+            <FieldShell>
+              <input
+                className="w-full bg-transparent text-[13px] text-[var(--text)] outline-none"
+                onChange={(event) => onUpdateVoiceId(event.target.value)}
+                placeholder="voice-id-from-elevenlabs"
+                value={voiceId}
+              />
+            </FieldShell>
+          </div>
 
-      <div>
-        <div className="mb-2 flex items-center justify-between">
-          <p className="label-track text-[10px] text-[var(--muted)]">
-            NEURAL TEMP:
-          </p>
-          <span className="text-[11px] text-[var(--primary)]">
-            {Number(config.temperature).toFixed(1)}
-          </span>
-        </div>
-        <FieldShell>
-          <input
-            className="config-slider h-2 w-full cursor-pointer appearance-none rounded-full bg-[rgba(255,255,255,0.06)]"
-            max="1"
-            min="0"
-            onChange={(event) =>
-              setConfig((current) => ({
-                ...current,
-                temperature: Number(event.target.value),
-              }))
-            }
-            step="0.1"
-            type="range"
-            value={config.temperature}
-          />
-        </FieldShell>
-      </div>
-
-      <div>
-        <p className="label-track mb-2 text-[10px] text-[var(--muted)]">
-          OUTPUT LIMIT:
-        </p>
-        <FieldShell>
-          <input
-            className="w-full bg-transparent text-[13px] text-[var(--text)] outline-none"
-            min="1"
-            onChange={(event) =>
-              setConfig((current) => ({
-                ...current,
-                maxTokens:
-                  event.target.value === "" ? "" : Number(event.target.value),
-              }))
-            }
-            type="number"
-            value={config.maxTokens}
-          />
-        </FieldShell>
-      </div>
-
-      <div>
-        <div className="mb-2 flex items-center justify-between gap-3">
-          <p className="label-track text-[10px] text-[var(--muted)]">
-            AUTO-SPEAK:
-          </p>
-          <button
-            className="cyber-button clip-button px-3 py-1 text-[11px] transition-all duration-150"
-            onClick={() => {
-              onToggleTtsSound();
-              setTtsEnabled((current) => !current);
-            }}
-            type="button"
-          >
-            <span className={`button-fill ${ttsEnabled ? "button-primary" : "button-toggle"}`}>
-              {ttsEnabled ? "[ ON ]" : "[ OFF ]"}
-            </span>
-          </button>
+          <div className="flex items-center justify-between gap-3">
+            <p className="label-track text-[11px] text-[var(--muted)]">
+              Auto-Speak
+            </p>
+            <button
+              className="cyber-button clip-button px-3 py-1 transition-all duration-150"
+              onClick={() => {
+                onToggleTtsSound();
+                setTtsEnabled((current) => !current);
+              }}
+              type="button"
+            >
+              <span className={`button-fill ${ttsEnabled ? "button-primary" : "button-toggle"}`}>
+                {ttsEnabled ? "ON" : "OFF"}
+              </span>
+            </button>
+          </div>
         </div>
       </div>
 
-      <div>
-        <p className="label-track mb-2 text-[10px] text-[var(--muted)]">
-          PERSONALITY MATRIX:
+      <div className="border-t border-[rgba(255,255,255,0.05)] pt-4">
+        <p className="label-track mb-3 text-[11px] text-[var(--ai)]">
+          Generation
+        </p>
+        <div className="space-y-3">
+          <div>
+            <div className="mb-1.5 flex items-center justify-between">
+              <p className="label-track text-[11px] text-[var(--muted)]">
+                Temperature
+              </p>
+              <span className="text-[12px] font-bold text-[var(--primary)]">
+                {Number(config.temperature).toFixed(1)}
+              </span>
+            </div>
+            <FieldShell>
+              <input
+                className="config-slider h-2 w-full cursor-pointer appearance-none rounded-full bg-[rgba(255,255,255,0.06)]"
+                max="1"
+                min="0"
+                onChange={(event) =>
+                  setConfig((current) => ({
+                    ...current,
+                    temperature: Number(event.target.value),
+                  }))
+                }
+                step="0.1"
+                type="range"
+                value={config.temperature}
+              />
+            </FieldShell>
+          </div>
+
+          <div>
+            <p className="label-track mb-1.5 text-[11px] text-[var(--muted)]">
+              Max Tokens
+            </p>
+            <FieldShell>
+              <input
+                className="w-full bg-transparent text-[13px] text-[var(--text)] outline-none"
+                min="1"
+                onChange={(event) =>
+                  setConfig((current) => ({
+                    ...current,
+                    maxTokens:
+                      event.target.value === "" ? "" : Number(event.target.value),
+                  }))
+                }
+                type="number"
+                value={config.maxTokens}
+              />
+            </FieldShell>
+          </div>
+        </div>
+      </div>
+
+      <div className="border-t border-[rgba(255,255,255,0.05)] pt-4">
+        <p className="label-track mb-1.5 text-[11px] text-[var(--muted)]">
+          System Prompt
         </p>
         <FieldShell>
           <textarea
-            className="min-h-[136px] w-full resize-none bg-transparent text-[12px] leading-5 text-[var(--text)] outline-none"
+            className="min-h-[120px] w-full resize-none bg-transparent text-[12px] leading-5 text-[var(--text)] outline-none"
             onChange={(event) =>
               setConfig((current) => ({
                 ...current,
@@ -1772,11 +1770,11 @@ function ConfigFields({
       </div>
 
       <button
-        className="cyber-button clip-button w-full px-4 py-3 text-[11px] text-[var(--error)] transition-all duration-150 hover:text-black"
+        className="cyber-button clip-button w-full px-4 py-2.5 transition-all duration-150"
         onClick={onPurge}
         type="button"
       >
-        <span className="button-fill button-danger">[ PURGE MEMORY ]</span>
+        <span className="button-fill button-danger">CLEAR CHAT</span>
       </button>
     </div>
   );
@@ -2862,88 +2860,67 @@ export default function App() {
         <CutFrame
           className="mb-3 shrink-0"
           cutClass="clip-panel"
-          innerClassName="panel-shell px-4 py-4 md:px-6 md:py-5"
+          innerClassName="panel-shell px-4 py-3 md:px-6 md:py-4"
         >
-          <div className="flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
-            <div className="min-w-0 xl:flex-1">
-              <div className="flex flex-wrap items-center gap-3">
-                <p className="glitch-title label-track text-[13px] font-bold text-[var(--primary)]">
-                  NEURALLINK_v2.0
+          <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
+            <div className="flex min-w-0 items-center gap-4 xl:flex-1">
+              <div className="min-w-0">
+                <div className="flex items-center gap-3">
+                  <p className="glitch-title label-track text-[14px] font-bold text-[var(--primary)]">
+                    NEURALLINK_v2.0
+                  </p>
+                  <span className={`status-dot ${connectionStatus === "online" ? "online" : "disconnected"} ${connectionStatus === "online" ? "status-pulse" : ""}`} />
+                </div>
+                <p className="label-track mt-1 text-[11px] text-[var(--muted)]">
+                  {`${connectorSpec.label} / ${config.model}`}
                 </p>
-                <span className="hidden text-[10px] text-[var(--muted)] sm:block">
-                  {"// blackwall relay // secure shard"}
-                </span>
               </div>
-              <p className="label-track mt-2 text-[11px] text-[var(--muted)]">
-                SECURE CHANNEL ESTABLISHED
-              </p>
+
+              <CutFrame
+                className="header-active-session hidden xl:block xl:min-w-[280px]"
+                cutClass="clip-input"
+                innerClassName="chip-fill px-4 py-2.5"
+              >
+                <div className="flex items-center justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="truncate text-[12px] text-[var(--text)]">
+                      {activeSession.title}
+                    </p>
+                  </div>
+                  <div className="flex shrink-0 items-center gap-3 text-[10px]">
+                    <span className="text-[var(--muted)]">{activeSessionUpdatedLabel}</span>
+                    <span className="text-[var(--primary)]">
+                      {activeMessages.filter((message) => message.role !== "system").length} msgs
+                    </span>
+                  </div>
+                </div>
+              </CutFrame>
             </div>
 
-            <CutFrame
-              className="header-active-session xl:min-w-[320px]"
-              cutClass="clip-input"
-              innerClassName="chip-fill px-4 py-3"
-            >
-              <div className="flex items-start justify-between gap-3">
-                <div className="min-w-0">
-                  <p className="label-track text-[10px] text-[var(--muted)]">
-                    ACTIVE SESSION
-                  </p>
-                  <p className="mt-1 truncate text-[12px] text-[var(--text)]">
-                    {activeSession.title}
-                  </p>
-                </div>
-                <div className="text-right">
-                  <p className="text-[10px] text-[var(--muted)]">
-                    {activeSessionUpdatedLabel}
-                  </p>
-                  <p className="mt-1 text-[10px] text-[var(--primary)]">
-                    {activeMessages.filter((message) => message.role !== "system").length} msgs
-                  </p>
-                </div>
-              </div>
-            </CutFrame>
-
-            <div className="flex flex-col gap-3 xl:items-end">
-              <div className="flex flex-wrap items-center gap-2">
-                <StatusChip
-                  label={connectionStatus === "online" ? "ONLINE" : "DISCONNECTED"}
-                  pulse={connectionStatus === "online"}
-                  tone={connectionStatus === "online" ? "online" : "disconnected"}
-                />
-                <StatusChip label="ENCRYPTED" tone="encrypted" />
-                <StatusChip label="GHOST ACTIVE" tone="ghost" />
-              </div>
-              <div className="flex flex-wrap items-center gap-2">
-                <CutFrame className="w-auto" cutClass="clip-chip" innerClassName="chip-fill px-3 py-2">
-                  <p className="label-track text-[10px] text-[var(--muted)]">
-                    {`${connectorSpec.label} // ${config.model}`}
-                  </p>
-                </CutFrame>
-                <CutFrame className="w-auto" cutClass="clip-chip" innerClassName="chip-fill px-3 py-2">
-                  <p className="label-track text-[10px] text-[var(--muted)]">
-                    ~{tokenEstimate.toLocaleString()} TOKENS
-                  </p>
-                </CutFrame>
-                <button
-                  className="cyber-button clip-button px-4 py-2 text-[11px] text-[var(--primary)] transition-all duration-150"
-                  onClick={toggleSessions}
-                  type="button"
-                >
-                  <span className="button-fill button-ghost">
-                    {sessionsOpen ? "[ CLOSE SESSIONS ]" : "[ SESSIONS ]"}
-                  </span>
-                </button>
-                <button
-                  className="cyber-button clip-button px-4 py-2 text-[11px] text-black transition-all duration-150"
-                  onClick={toggleConfig}
-                  type="button"
-                >
-                  <span className="button-fill button-primary">
-                    {isMobile ? "[ CONFIG ]" : configOpen ? "[ CLOSE CONFIG ]" : "[ CONFIG ]"}
-                  </span>
-                </button>
-              </div>
+            <div className="flex flex-wrap items-center gap-2">
+              <CutFrame className="hidden w-auto sm:block" cutClass="clip-chip" innerClassName="chip-fill px-3 py-2">
+                <p className="label-track text-[10px] text-[var(--muted)]">
+                  ~{tokenEstimate.toLocaleString()} TKN
+                </p>
+              </CutFrame>
+              <button
+                className="cyber-button clip-button px-3 py-2 transition-all duration-150"
+                onClick={toggleSessions}
+                type="button"
+              >
+                <span className="button-fill button-ghost">
+                  {sessionsOpen ? "SESSIONS" : "SESSIONS"}
+                </span>
+              </button>
+              <button
+                className="cyber-button clip-button px-3 py-2 transition-all duration-150"
+                onClick={toggleConfig}
+                type="button"
+              >
+                <span className="button-fill button-primary">
+                  CONFIG
+                </span>
+              </button>
             </div>
           </div>
         </CutFrame>
@@ -2980,11 +2957,15 @@ export default function App() {
               cutClass="clip-panel"
               innerClassName="panel-shell relative flex h-full min-h-0 flex-col overflow-hidden"
             >
-              <div className="grid shrink-0 grid-cols-2 gap-2 border-b border-[rgba(255,255,255,0.06)] px-4 py-3 text-[10px] text-[var(--muted)] md:grid-cols-4 md:px-6">
-                <p className="label-track">SESSION // {activeSession.title}</p>
-                <p className="label-track">TEMP // {Number(config.temperature).toFixed(1)}</p>
-                <p className="label-track">TOKENS // {tokenEstimate.toLocaleString()}</p>
-                <p className="label-track">READY // {currentPendingAttachments.length} FILES</p>
+              <div className="flex shrink-0 flex-wrap items-center gap-x-5 gap-y-1 border-b border-[rgba(255,255,255,0.06)] px-4 py-2.5 text-[11px] md:px-6">
+                <p className="truncate text-[var(--text)]/80">{activeSession.title}</p>
+                <div className="flex items-center gap-4 text-[var(--muted)]">
+                  <span className="label-track">T {Number(config.temperature).toFixed(1)}</span>
+                  <span className="label-track">~{tokenEstimate.toLocaleString()} tkn</span>
+                  {currentPendingAttachments.length > 0 && (
+                    <span className="label-track text-[var(--primary)]">{currentPendingAttachments.length} file{currentPendingAttachments.length !== 1 ? "s" : ""}</span>
+                  )}
+                </div>
               </div>
 
               <div
@@ -3018,10 +2999,11 @@ export default function App() {
                 ) : null}
 
                 {dragActive ? (
-                  <div className="absolute inset-4 z-30 flex items-center justify-center rounded-[2px] border-2 border-dashed border-[var(--primary)] bg-[rgba(5,7,13,0.86)]">
-                    <p className="label-track text-[12px] text-[var(--primary)]">
-                      [ DROP FILE TO UPLOAD ]
+                  <div className="absolute inset-4 z-30 flex flex-col items-center justify-center gap-3 rounded-[3px] border-2 border-dashed border-[var(--primary)] bg-[rgba(5,7,13,0.9)]">
+                    <p className="label-track text-[14px] font-bold text-[var(--primary)]">
+                      DROP FILES HERE
                     </p>
+                    <p className="text-[12px] text-[var(--muted)]">Images, PDFs, or text files</p>
                   </div>
                 ) : null}
 
@@ -3030,29 +3012,47 @@ export default function App() {
                   ref={scrollRef}
                 >
                   {activeMessages.length === 0 && !isResponding ? (
-                    <div className="flex h-full items-center justify-center">
+                    <div className="flex h-full items-center justify-center px-4">
                       <CutFrame
-                        className="empty-state-panel w-full max-w-[520px]"
+                        className="empty-state-panel w-full max-w-[480px]"
                         cutClass="clip-sheet"
-                        innerClassName="auth-shell px-6 py-7"
+                        innerClassName="auth-shell px-6 py-8 md:px-8 md:py-10"
                       >
-                        <div className="space-y-4 text-center">
-                          <p className="label-track text-[11px] text-[var(--primary)]">
-                            CHANNEL IDLE
+                        <div className="space-y-5 text-center">
+                          <div className="space-y-2">
+                            <p className="glitch-title label-track text-[16px] font-bold text-[var(--primary)]">
+                              GHOST READY
+                            </p>
+                            <p className="text-[13px] leading-6 text-[var(--text)]/90">
+                              Awaiting transmission
+                            </p>
+                          </div>
+                          <p className="mx-auto max-w-[340px] text-[12px] leading-6 text-[var(--muted)]">
+                            Type a message below, drop files into the relay, or use voice input to begin.
                           </p>
-                          <p className="text-[15px] leading-7 text-[var(--text)]">
-                            [ awaiting transmission ]
-                          </p>
-                          <p className="mx-auto max-w-[360px] text-[11px] leading-5 text-[var(--muted)]">
-                            Start a new session, drop files into the relay, or jack in with a direct prompt to wake GHOST.
-                          </p>
-                          <div className="flex flex-wrap items-center justify-center gap-2 pt-1">
-                            <CutFrame className="w-auto" cutClass="clip-chip" innerClassName="chip-fill px-3 py-2">
-                              <span className="text-[10px] text-[var(--muted)]">ATTACH // DROP FILES</span>
-                            </CutFrame>
-                            <CutFrame className="w-auto" cutClass="clip-chip" innerClassName="chip-fill px-3 py-2">
-                              <span className="text-[10px] text-[var(--muted)]">MIC // LIVE INPUT</span>
-                            </CutFrame>
+                          <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+                            <button
+                              className="cyber-button clip-button px-4 py-2 transition-all duration-150"
+                              onClick={handleOpenAttach}
+                              type="button"
+                            >
+                              <span className="button-fill button-ghost">ATTACH FILES</span>
+                            </button>
+                            {speechSupported && (
+                              <button
+                                className="cyber-button clip-button px-4 py-2 transition-all duration-150"
+                                onClick={toggleRecording}
+                                type="button"
+                              >
+                                <span className="button-fill button-toggle">VOICE INPUT</span>
+                              </button>
+                            )}
+                          </div>
+                          <div className="flex flex-wrap items-center justify-center gap-3 pt-1 text-[11px] text-[var(--muted)]">
+                            <span className="kbd-hint">Enter</span>
+                            <span>to send</span>
+                            <span className="kbd-hint">Ctrl+K</span>
+                            <span>to focus</span>
                           </div>
                         </div>
                       </CutFrame>
@@ -3085,55 +3085,37 @@ export default function App() {
             <CutFrame
               className="shrink-0"
               cutClass="clip-panel"
-              innerClassName="panel-shell px-4 py-4 md:px-6"
+              innerClassName="panel-shell px-4 py-3 md:px-6"
             >
               <AttachmentPreviewList
                 attachments={currentPendingAttachments}
                 onRemove={removePendingAttachment}
               />
 
-              <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-                <div className="flex flex-wrap items-center gap-2">
-                  <CutFrame className="w-auto" cutClass="clip-chip" innerClassName="chip-fill px-3 py-2">
-                    <span className="text-[10px] text-[var(--muted)]">
-                      {canSend ? "READY TO TRANSMIT" : "STANDBY"}
-                    </span>
-                  </CutFrame>
-                  {currentPendingAttachments.length ? (
-                    <CutFrame className="w-auto" cutClass="clip-chip" innerClassName="chip-fill px-3 py-2">
-                      <span className="text-[10px] text-[var(--primary)]">
-                        {currentPendingAttachments.length} ATTACHMENTS
-                      </span>
-                    </CutFrame>
-                  ) : null}
-                </div>
-                <p className="text-[10px] text-[var(--muted)]">
-                  {currentDraft.trim().length} chars
-                </p>
-              </div>
-
-              <div className="flex items-end gap-3">
-                <button
-                  className="cyber-button clip-button shrink-0 px-4 py-3 text-[11px] text-[var(--primary)] transition-all duration-150"
-                  onClick={handleOpenAttach}
-                  type="button"
-                >
-                  <span className="button-fill button-ghost min-w-[96px]">
-                    [ ATTACH ]
-                  </span>
-                </button>
-
-                {speechSupported ? (
+              <div className="flex items-end gap-2.5">
+                <div className="hidden shrink-0 flex-col gap-2 sm:flex">
                   <button
-                    className="cyber-button clip-button shrink-0 px-4 py-3 text-[11px] transition-all duration-150"
-                    onClick={toggleRecording}
+                    className="cyber-button clip-button px-3 py-2 transition-all duration-150"
+                    onClick={handleOpenAttach}
                     type="button"
                   >
-                    <span className={`button-fill min-w-[82px] ${isRecording ? "button-live" : "button-ghost"}`}>
-                      [ MIC ]
+                    <span className="button-fill button-ghost min-w-[80px]">
+                      ATTACH
                     </span>
                   </button>
-                ) : null}
+
+                  {speechSupported ? (
+                    <button
+                      className="cyber-button clip-button px-3 py-2 transition-all duration-150"
+                      onClick={toggleRecording}
+                      type="button"
+                    >
+                      <span className={`button-fill min-w-[80px] ${isRecording ? "button-live" : "button-toggle"}`}>
+                        {isRecording ? "STOP" : "MIC"}
+                      </span>
+                    </button>
+                  ) : null}
+                </div>
 
                 <CutFrame
                   className="console-shell flex-1"
@@ -3148,7 +3130,7 @@ export default function App() {
                       </div>
                     ) : null}
                     <textarea
-                      className="console-textarea max-h-[144px] min-h-[48px] w-full resize-none bg-transparent text-[14px] leading-6 text-[var(--text)] caret-[var(--primary)] outline-none placeholder-transparent"
+                      className="console-textarea max-h-[144px] min-h-[44px] w-full resize-none bg-transparent text-[14px] leading-6 text-[var(--text)] caret-[var(--primary)] outline-none placeholder-transparent"
                       onChange={(event) => updateSessionDraft(activeSession.id, event.target.value)}
                       onKeyDown={handleTextareaKeyDown}
                       placeholder="jack_in > _"
@@ -3163,22 +3145,47 @@ export default function App() {
                 </CutFrame>
 
                 <button
-                  className="cyber-button clip-button shrink-0 self-stretch px-5 py-3 text-[12px] text-black transition-all duration-150 disabled:cursor-not-allowed disabled:opacity-50"
+                  className="cyber-button clip-button shrink-0 self-stretch px-5 py-3 transition-all duration-150"
                   disabled={isResponding || waitingForAuth || !canSend}
                   onClick={() => void sendMessage(true)}
                   type="button"
                 >
-                  <span className="button-fill button-primary min-w-[122px]">
-                    TRANSMIT
+                  <span className="button-fill button-primary min-w-[100px]">
+                    {isResponding ? "SENDING..." : "SEND"}
                   </span>
                 </button>
               </div>
 
-              <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-[10px] text-[var(--muted)]">
-                <span className="label-track">ENTER // SEND</span>
-                <span className="label-track">SHIFT+ENTER // NEWLINE</span>
-                <span className="label-track">CTRL+K // FOCUS</span>
-                <span className="label-track">CTRL+/ // CONFIG</span>
+              <div className="mt-2.5 flex flex-wrap items-center justify-between gap-2">
+                <div className="flex items-center gap-2 sm:hidden">
+                  <button
+                    className="cyber-button clip-button px-2.5 py-1.5 transition-all duration-150"
+                    onClick={handleOpenAttach}
+                    type="button"
+                  >
+                    <span className="button-fill button-ghost">ATTACH</span>
+                  </button>
+                  {speechSupported ? (
+                    <button
+                      className="cyber-button clip-button px-2.5 py-1.5 transition-all duration-150"
+                      onClick={toggleRecording}
+                      type="button"
+                    >
+                      <span className={`button-fill ${isRecording ? "button-live" : "button-toggle"}`}>
+                        {isRecording ? "STOP" : "MIC"}
+                      </span>
+                    </button>
+                  ) : null}
+                </div>
+                <div className="hidden flex-wrap items-center gap-3 text-[10px] text-[var(--muted)] sm:flex">
+                  <span><span className="kbd-hint">Enter</span> send</span>
+                  <span><span className="kbd-hint">Shift+Enter</span> newline</span>
+                  <span className="hidden md:inline"><span className="kbd-hint">Ctrl+K</span> focus</span>
+                  <span className="hidden md:inline"><span className="kbd-hint">Ctrl+/</span> config</span>
+                </div>
+                {currentDraft.trim().length > 0 && (
+                  <span className="text-[10px] text-[var(--muted)]">{currentDraft.trim().length} chars</span>
+                )}
               </div>
 
               <input
@@ -3196,12 +3203,9 @@ export default function App() {
             className={`hidden overflow-hidden transition-[width,opacity,transform] duration-300 md:block ${configOpen ? "w-[280px] opacity-100 translate-x-0" : "w-0 opacity-0 translate-x-6 pointer-events-none"}`}
           >
             <CutFrame className="h-full" cutClass="clip-sheet" innerClassName="config-shell h-full p-5">
-              <div className="mb-5">
-                <p className="label-track text-[11px] text-[var(--primary)]">
-                  CONFIG_CONSOLE
-                </p>
-                <p className="mt-1 text-[11px] text-[var(--muted)]">
-                  tuning live model parameters
+              <div className="mb-4">
+                <p className="label-track text-[12px] font-bold text-[var(--primary)]">
+                  CONFIG
                 </p>
               </div>
               <div className="min-h-0 flex-1 overflow-y-auto pr-1">
@@ -3272,25 +3276,20 @@ export default function App() {
       <div
         className={`fixed inset-x-4 bottom-4 z-50 transition-transform duration-300 md:hidden ${isMobile && configOpen ? "translate-y-0" : "pointer-events-none translate-y-[120%]"}`}
       >
-        <CutFrame className="max-h-[78vh]" cutClass="clip-sheet" innerClassName="config-shell flex max-h-[78vh] flex-col gap-5 p-5">
-          <div className="flex items-start justify-between gap-4">
-            <div>
-              <p className="label-track text-[11px] text-[var(--primary)]">
-                CONFIG_CONSOLE
-              </p>
-              <p className="mt-1 text-[11px] text-[var(--muted)]">
-                tuning live model parameters
-              </p>
-            </div>
+        <CutFrame className="max-h-[78vh]" cutClass="clip-sheet" innerClassName="config-shell flex max-h-[78vh] flex-col gap-4 p-5">
+          <div className="flex items-center justify-between gap-4">
+            <p className="label-track text-[12px] font-bold text-[var(--primary)]">
+              CONFIG
+            </p>
             <button
-              className="label-track text-[11px] text-[var(--muted)] transition-colors hover:text-[var(--primary)]"
+              className="cyber-button clip-button px-3 py-1.5 transition-all duration-150"
               onClick={() => {
                 playSound("click");
                 setConfigOpen(false);
               }}
               type="button"
             >
-              [ CLOSE ]
+              <span className="button-fill button-toggle">CLOSE</span>
             </button>
           </div>
           <div className="min-h-0 flex-1 overflow-y-auto pr-1">
